@@ -1,0 +1,8 @@
+/* App.css or any global CSS file */
+
+.layout-container {
+    width: calc(100vh - 40px); /* Screen width minus 40px for padding */
+    max-width: 100%; /* Ensure layout container doesn't exceed screen width */
+    padding: 20px; /* 20px padding inside the layout container */
+    border: 1px solid #ccc; /* Add border if necessary */
+  }
