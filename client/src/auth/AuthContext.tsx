@@ -4,8 +4,8 @@ type AuthContextType = {
   isLoggedIn: boolean;
   login: () => void;
   logout: () => void;
-  loginDetailsSetter: (details: { username: string; password: string }) => void;
-  loginDetails: { username?: string; password?: string };
+  loginDetailsSetter: (details: { username: string; password: string, accessToken: string,  refreshToken: string }) => void;
+  loginDetails: { username?: string; password?: string, accessToken?: string, refreshToken? : string };
 };
 
 // Create the context with the defined type
@@ -14,17 +14,19 @@ const AuthContext = createContext<AuthContextType>({
   login: () => {},
   logout: () => {},
   loginDetailsSetter: () => {},
-  loginDetails: { username: "", password: "" }
+  loginDetails: { username: "", password: "", accessToken: localStorage.getItem("accessToken") || "", refreshToken : localStorage.getItem("refreshToken") || "" }
 });
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loginDetails, setLoginDetails] = useState<{ username?: string; password?: string }>({
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [loginDetails, setLoginDetails] = useState<{ username?: string; password?: string, accessToken?: string, refreshToken?: string }>({
     username: "",
-    password: ""
+    password: "",
+    accessToken: localStorage.getItem("accessToken") || "",
+    refreshToken: localStorage.getItem("refreshToken") || ""
   });
 
-  const loginDetailsSetter = (details: { username: string; password: string }) => {
+  const loginDetailsSetter = (details: { username: string; password: string, accessToken?: string, refreshToken?: string }) => {
     setLoginDetails(details);
     if(details?.username.trim() === ""){
       alert("Username cannot be empty.");

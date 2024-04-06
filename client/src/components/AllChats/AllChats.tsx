@@ -1,5 +1,6 @@
 import { Search } from "lucide-react";
 import "./AllChats.css";
+import getLoggedInUser from "../../api/loggedInUser";
 import { useEffect, useState } from "react";
 
 interface AllChatsProps {
@@ -8,11 +9,29 @@ interface AllChatsProps {
 }
 
 const AllChats = ({ selectedUser, selectedUserSetter } : AllChatsProps) => {
-  const [users, setUsers] = useState([""]);
+  const [users, setUsers] = useState([]);
+  const [currentUserLoginDetails, setCurrentUserLoginDetails] = useState({
+    username: "",
+    name: ""
+  })
 
   useEffect(() => {
-    setUsers(["User 1", "User 2", "User 3", "User 4", "User 5"]);
-  }, []);
+    const loggedInUser = async () => {
+      const response = await getLoggedInUser();
+      if(response){
+        setCurrentUserLoginDetails({
+          username: response?.username,
+          name: response?.name
+        })
+        setUsers(response?.contacts)
+      }
+      else{
+        alert("Could not get user!")
+      }
+    }
+
+    loggedInUser();
+  }, [])
 
   return (
     <div className={`rounded-[30px] h-full flex flex-col ${selectedUser ? "w-1/4" : "w-full"}`}>
@@ -20,8 +39,8 @@ const AllChats = ({ selectedUser, selectedUserSetter } : AllChatsProps) => {
       <div className="flex items-center gap-2">
         <div className="bg-black rounded-[50%] h-20 w-20"></div>
         <div className="flex flex-col">
-          <p>{"{Name}"}</p>
-          <p>{"{Username}"}</p>
+          <p>{currentUserLoginDetails?.name}</p>
+          <p>{currentUserLoginDetails?.username}</p>
         </div>
       </div>
 
