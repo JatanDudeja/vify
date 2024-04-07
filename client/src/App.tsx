@@ -10,6 +10,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/chats" element={<Layout />} />
+          <Route path="/chats/:username" element={<Layout />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

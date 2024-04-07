@@ -36,6 +36,7 @@ const Login = () => {
       loginDetailsSetter({...userLoginDetails, accessToken: response?.accessToken, refreshToken: response?.refreshToken});
       localStorage.setItem("accessToken", await response?.accessToken)
       localStorage.setItem("refreshToken", await response?.refreshToken)
+      localStorage.setItem("currentUser", response?.data?.username);
       navigate("/chats");
     } else {
       alert("Could not login.");

@@ -1,40 +1,64 @@
+// AllChats.tsx
+
 import { Search } from "lucide-react";
 import "./AllChats.css";
 import getLoggedInUser from "../../api/loggedInUser";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface AllChatsProps {
-  selectedUser: string;
-  selectedUserSetter : (user: string) => void;
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
 }
 
-const AllChats = ({ selectedUser, selectedUserSetter } : AllChatsProps) => {
+const AllChats = ({ isOpen, setIsOpen }: AllChatsProps) => {
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [currentUserLoginDetails, setCurrentUserLoginDetails] = useState({
     username: "",
-    name: ""
-  })
+    name: "",
+  });
 
   useEffect(() => {
+    // Fetch the loggedInUser
     const loggedInUser = async () => {
       const response = await getLoggedInUser();
-      if(response){
+      if (response) {
         setCurrentUserLoginDetails({
           username: response?.username,
-          name: response?.name
-        })
-        setUsers(response?.contacts)
+          name: response?.name,
+        });
+        setUsers(response?.contacts);
+
+
+        const selectedUserFromStorage = localStorage.getItem("selectedUser");
+        if (selectedUserFromStorage && isOpen) {
+          navigate(`/chats/${selectedUserFromStorage}`);
+        }
+      } else {
+        alert("Could not get user!");
       }
-      else{
-        alert("Could not get user!")
-      }
-    }
+    };
 
     loggedInUser();
-  }, [])
+  }, []);
+
+  const handleContactClick = (user: string) => {
+    setIsOpen(true);
+    setTimeout(() => {
+      navigate(`/chats/${user}`);
+      // Store the selected user in localStorage
+      localStorage.setItem("selectedUser", user);
+      localStorage.setItem("isOpen", "true");
+    }, 0);
+  };
 
   return (
-    <div className={`rounded-[30px] h-full flex flex-col ${selectedUser ? "w-1/4" : "w-full"}`}>
+    <div
+      className={`rounded-[30px] h-full flex flex-col ${
+        isOpen ? "w-1/4" : "w-full"
+      }`}
+    >
       {/* User Profile */}
       <div className="flex items-center gap-2">
         <div className="bg-black rounded-[50%] h-20 w-20"></div>
@@ -64,7 +88,7 @@ const AllChats = ({ selectedUser, selectedUserSetter } : AllChatsProps) => {
             <div
               key={key}
               className="flex mt-3 items-center gap-2 hover:bg-blue-300 hover:rounded-[20px] p-2"
-              onClick={() => selectedUserSetter(user)}
+              onClick={() => handleContactClick(user)}
             >
               <div className="bg-black rounded-[50%] h-10 w-10"></div>
               <div>{user}</div>
