@@ -24,9 +24,6 @@ function Layout() {
 
     socketInstance.emit("userConnect", localStorage.getItem("currentUser"));
 
-    socketInstance.on("new-message", (data) => {
-      console.log(`Received message: ${data}`);
-    });
 
     return () => {
       if (socketInstance) {

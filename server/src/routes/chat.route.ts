@@ -6,4 +6,6 @@ import verifyJWT from "../middlewares/auth.middleware.js";
 const router = Router();
 
 router.route("/getDirectChats").post(verifyJWT, getDirectChats);
-router.route("/sendMessage/:username").post(verifyJWT, );
+// router.route("/sendMessage/:username").post(verifyJWT, );
+
+export default router;
